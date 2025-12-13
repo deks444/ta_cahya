@@ -6,7 +6,7 @@
             <div class="flex items-center justify-between">
                 <a class="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80" href="{{ route('main') }}"
                     aria-label="Brand">
-                    <img class="h-[50px]" src="{{ asset('img/LOGO DPM-PM.png') }}" alt="">
+                    <img class="h-[70px]" src="{{ asset('img/theme1_sf.png') }}" alt="">
                 </a>
 
                 <!-- Collapse Button -->

@@ -6,15 +6,18 @@
             <!-- Hero Content -->
             <div>
                 <h1 class="text-3xl font-bold text-gray-800 sm:text-4xl lg:text-5xl lg:leading-tight">
-                    Dewan Perwakilan Mahasiswa <span class="text-blue-600">DPM-PM</span>
+                    SHAREFIT AKADEMI <span class="text-red-600">BALI</span>
                 </h1>
-                <p class="mt-4 text-lg text-gray-600">
-                    Merupakan satu struktur organisasi kemahasiswaan di perguruan tinggi yang berfungsi untuk
-                    menjalankan roda pemerintahan mahasiswa.
+                <p class="text-justify mt-4 text-lg text-gray-600">
+                    Merupakan club olahraga yang berfokus pada pengembangan kebugaran dan kesehatan anggotanya melalui
+                    berbagai program latihan dan kegiatan komunitas. Kami berkomitmen untuk menciptakan lingkungan yang
+                    mendukung gaya hidup sehat dan berprestasi bagi seluruh anggota kami. program yang kami rancang
+                    membantu dalam pengembangan prestasi atlet tinggakat pelajar hingga profesional sekolah dasar hingga
+                    lanjut.
                 </p>
                 <!-- Buttons -->
                 <div class="mt-6 flex gap-4">
-                    <a class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700"
+                    <a class="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-red-600 text-white hover:bg-red-700 focus:outline-none focus:bg-red-700"
                         href="{{ route('about') }}">
                         About Us
                         <svg class="shrink-0 size-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -34,7 +37,7 @@
 
             <!-- Hero Image -->
             <div class="relative">
-                <img class="w-full rounded-md object-cover" src="{{ asset('img/LOGO DPM-PM.png') }}" alt="Hero Image">
+                <img class="w-full rounded-md object-cover" src="{{ asset('img/sf_logo.png') }}" alt="Hero Image">
             </div>
             <!-- End Hero Image -->
         </div>
