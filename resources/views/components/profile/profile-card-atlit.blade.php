@@ -77,7 +77,7 @@
                     Update your details to keep your profile up-to-date.
                 </p>
             </div>
-            <form x-ref="profileForm" method="POST" action="{{ route('admin.profile.update') }}" class="flex flex-col"
+            <form x-ref="profileForm" method="POST" action="{{ route('atlit.profile.update') }}" class="flex flex-col"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -158,7 +158,7 @@
                     Update your password to keep your account secure.
                 </p>
             </div>
-            <form x-ref="passwordForm" method="POST" action="{{ route('admin.profile.password.update') }}"
+            <form x-ref="passwordForm" method="POST" action="{{ route('atlit.profile.password.update') }}"
                 class="flex flex-col">
                 @csrf
                 @method('PUT')

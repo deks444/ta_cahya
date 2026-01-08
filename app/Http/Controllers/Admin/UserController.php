@@ -15,8 +15,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::where('is_admin', false)->latest()->get();
-        return view('admin.users.index', compact('users'));
+        $coaches = User::where('is_admin', false)
+            ->where('role', 'pelatih')
+            ->latest()
+            ->get();
+
+        $athletes = User::where('is_admin', false)
+            ->where('role', 'atlit')
+            ->latest()
+            ->get();
+
+        return view('admin.users.index', compact('coaches', 'athletes'));
     }
 
     /**

@@ -13,24 +13,42 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
+        // Create Admin/Superadmin
         User::factory()->create([
-            'name' => 'Admin User',
+            'name' => 'Admin Sharefit',
             'username' => 'admin',
             'no_hp' => '08123456789',
             'is_active' => true,
             'is_admin' => true,
+            'role' => 'admin',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
         ]);
 
+        // Create Pelatih
         User::factory()->create([
-            'name' => 'Regular User',
-            'username' => 'user',
+            'name' => 'Pelatih Budi',
+            'username' => 'pelatih',
             'no_hp' => '08123456780',
             'is_active' => true,
             'is_admin' => false,
+            'role' => 'pelatih',
             'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        ]);
+
+        // Create Atlit
+        User::factory()->create([
+            'name' => 'Atlit Andi',
+            'username' => 'atlit',
+            'no_hp' => '08123456781',
+            'is_active' => true,
+            'is_admin' => false,
+            'role' => 'atlit',
+            'password' => \Illuminate\Support\Facades\Hash::make('password'),
+        ]);
+
+        // Seed user points and achievements
+        $this->call([
+            UserPointsSeeder::class,
         ]);
     }
 }

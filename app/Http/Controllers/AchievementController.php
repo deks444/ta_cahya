@@ -7,9 +7,17 @@ use Illuminate\Http\Request;
 
 class AchievementController extends Controller
 {
+    public function index()
+    {
+        $achievements = \App\Models\Achievement::with('user')->orderBy('created_at', 'desc')->paginate(10);
+        $athletes = \App\Models\User::where('role', 'atlit')->get();
+        return view('admin.achievements.index', compact('achievements', 'athletes'));
+    }
+
     public function store(Request $request)
     {
         $request->validate([
+            'user_id' => 'nullable|exists:users,id',
             'name' => 'required|string|max:255',
             'rank' => 'required|string|max:255',
             'file' => 'required|file|mimes:pdf,jpg,jpeg,png|max:2048',
@@ -23,19 +31,25 @@ class AchievementController extends Controller
             $path = 'uploads/achievements/' . $filename;
         }
 
+        // Jika admin, gunakan user_id dari request, jika bukan gunakan Auth::id()
+        $userId = (\Illuminate\Support\Facades\Auth::user()->role === 'admin' && $request->user_id)
+            ? $request->user_id
+            : \Illuminate\Support\Facades\Auth::id();
+
         \App\Models\Achievement::create([
-            'user_id' => \Illuminate\Support\Facades\Auth::id(),
+            'user_id' => $userId,
             'name' => $request->name,
             'rank' => $request->rank,
             'file_path' => $path,
         ]);
 
-        return back()->with('success', 'Achievement added successfully.');
+        return back()->with('success', 'Prestasi berhasil ditambahkan.');
     }
 
     public function update(Request $request, \App\Models\Achievement $achievement)
     {
-        if ($achievement->user_id !== \Illuminate\Support\Facades\Auth::id()) {
+        // Penjagaan: hanya admin atau pemilik yang bisa update
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin' && $achievement->user_id !== \Illuminate\Support\Facades\Auth::id()) {
             abort(403);
         }
 
@@ -50,9 +64,14 @@ class AchievementController extends Controller
             'rank' => $request->rank,
         ];
 
+        // Admin juga bisa mengubah kepemilikan prestasi jika diperlukan
+        if (\Illuminate\Support\Facades\Auth::user()->role === 'admin' && $request->user_id) {
+            $data['user_id'] = $request->user_id;
+        }
+
         if ($request->hasFile('file')) {
-            // Delete old file
-            if (file_exists(public_path($achievement->file_path))) {
+            // Hapus file lama
+            if ($achievement->file_path && file_exists(public_path($achievement->file_path))) {
                 @unlink(public_path($achievement->file_path));
             }
 
@@ -64,21 +83,22 @@ class AchievementController extends Controller
 
         $achievement->update($data);
 
-        return back()->with('success', 'Achievement updated successfully.');
+        return back()->with('success', 'Prestasi berhasil diperbarui.');
     }
 
     public function destroy(\App\Models\Achievement $achievement)
     {
-        if ($achievement->user_id !== \Illuminate\Support\Facades\Auth::id()) {
+        // Penjagaan: hanya admin atau pemilik yang bisa hapus
+        if (\Illuminate\Support\Facades\Auth::user()->role !== 'admin' && $achievement->user_id !== \Illuminate\Support\Facades\Auth::id()) {
             abort(403);
         }
 
-        if (file_exists(public_path($achievement->file_path))) {
+        if ($achievement->file_path && file_exists(public_path($achievement->file_path))) {
             @unlink(public_path($achievement->file_path));
         }
 
         $achievement->delete();
 
-        return back()->with('success', 'Achievement deleted successfully.');
+        return back()->with('success', 'Prestasi berhasil dihapus.');
     }
 }

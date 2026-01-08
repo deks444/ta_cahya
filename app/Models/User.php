@@ -22,6 +22,7 @@ class User extends Authenticatable
         'username',
         'is_active',
         'is_admin',
+        'role',
         'no_hp',
         'avatar',
         'password',
@@ -51,13 +52,20 @@ class User extends Authenticatable
             'is_active' => 'boolean',
         ];
     }
-    public function points()
-    {
-        return $this->hasOne(UserPoint::class);
-    }
+
 
     public function achievements()
     {
         return $this->hasMany(Achievement::class);
+    }
+
+    public function activityScores()
+    {
+        return $this->hasMany(ActivityScore::class);
+    }
+
+    public function activitySchedules()
+    {
+        return $this->hasMany(ActivitySchedule::class, 'coach_id');
     }
 }

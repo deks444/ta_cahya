@@ -22,11 +22,15 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->is_admin) {
-                return redirect()->route('admin.dashboard')->with('success', 'Selamat datang Admin!');
+            $user = Auth::user();
+
+            // Redirect admin and pelatih to admin dashboard
+            if ($user->role === 'admin' || $user->role === 'pelatih') {
+                return redirect()->route('admin.dashboard')->with('success', 'Selamat datang!');
             }
 
-            return redirect()->intended(route('main'))->with('success', 'Login berhasil!');
+            // Redirect atlit to home page
+            return redirect()->route('main')->with('success', 'Login berhasil!');
         }
 
         return back()->withErrors([

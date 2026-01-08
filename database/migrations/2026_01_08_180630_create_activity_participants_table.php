@@ -10,13 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('achievements', function (Blueprint $table) {
+        Schema::create('activity_participants', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('activity_schedule_id')->constrained()->cascadeOnDelete();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('name');
-            $table->string('rank');
-            $table->string('file_path')->nullable();
+            $table->enum('status', ['registered', 'attended', 'absent'])->default('registered');
             $table->timestamps();
+
+            // Mencegah user daftar double di jadwal yang sama
+            $table->unique(['activity_schedule_id', 'user_id']);
         });
     }
 
@@ -25,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('achievements');
+        Schema::dropIfExists('activity_participants');
     }
 };

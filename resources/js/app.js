@@ -1,6 +1,6 @@
 import './bootstrap';
 import 'preline';
-import Alpine from 'alpinejs';
+// import Alpine from 'alpinejs';
 import ApexCharts from 'apexcharts';
 import flatpickr from 'flatpickr';
 import { Calendar } from '@fullcalendar/core';
@@ -9,7 +9,7 @@ import { Calendar } from '@fullcalendar/core';
 console.log('App JS Loading...');
 
 // Assign to window object
-window.Alpine = Alpine;
+// window.Alpine = Alpine;
 window.ApexCharts = ApexCharts;
 window.flatpickr = flatpickr;
 window.FullCalendar = Calendar;
@@ -53,5 +53,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Start Alpine
-Alpine.start();
-console.log('Alpine started');
+// Alpine.start();
+// console.log('Alpine started');

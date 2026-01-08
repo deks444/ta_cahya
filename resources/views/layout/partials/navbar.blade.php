@@ -136,6 +136,27 @@
                         @endguest
 
                         @auth
+                            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'pelatih')
+                                <a class="p-2 flex items-center text-sm font-medium text-gray-800 hover:text-blue-500 focus:outline-none focus:text-blue-500"
+                                    href="{{ route('admin.dashboard') }}">
+                                    <svg class="shrink-0 size-4 me-3 md:me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect width="7" height="9" x="3" y="3" rx="1" />
+                                        <rect width="7" height="5" x="14" y="3" rx="1" />
+                                        <rect width="7" height="9" x="14" y="12" rx="1" />
+                                        <rect width="7" height="5" x="3" y="16" rx="1" />
+                                    </svg>
+                                    Dashboard
+                                </a>
+                            @elseif(Auth::user()->role === 'atlit')
+                                <a class="p-2 flex items-center text-sm font-medium text-gray-800 hover:text-blue-500 focus:outline-none focus:text-blue-500"
+                                    href="{{ route('atlit.schedules.index') }}">
+                                    <svg class="shrink-0 size-4 me-3 md:me-2" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    Jadwal Latihan
+                                </a>
+                            @endif
+
                             <!-- Profile Dropdown -->
                             <div class="hs-dropdown [--strategy:static] md:[--strategy:fixed] [--adaptive:none]">
                                 <button id="hs-navbar-dropdown-profile" type="button"
@@ -159,7 +180,7 @@
                                     role="menu" aria-orientation="vertical" aria-labelledby="hs-navbar-dropdown-profile">
                                     <div class="py-1 md:px-1 space-y-0.5">
                                         <a class="py-1.5 px-2 flex items-center text-sm text-gray-800 hover:text-blue-500 focus:outline-none focus:text-gray-500"
-                                            href="#">
+                                            href="{{ Auth::user()->role === 'atlit' ? route('atlit.profile') : route('admin.profile') }}">
                                             Profil Saya
                                         </a>
                                         <hr class="my-1 border-gray-200">
