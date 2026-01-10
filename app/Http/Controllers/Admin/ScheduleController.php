@@ -19,8 +19,10 @@ class ScheduleController extends Controller
      */
     public function index()
     {
-        // Ambil semua jadwal
-        $schedules = ActivitySchedule::with(['activity', 'coach'])->get();
+        // Ambil semua jadwal dengan jumlah peserta
+        $schedules = ActivitySchedule::with(['activity', 'coach'])
+            ->withCount('participants')
+            ->get();
 
         // Format data untuk FullCalendar
         $events = $schedules->map(function ($schedule) {
@@ -33,9 +35,14 @@ class ScheduleController extends Controller
             // Gabungkan tanggal dan jam mulai
             $start = Carbon::parse($schedule->date . ' ' . $schedule->start_time)->toIso8601String();
 
+            // Format title dengan jumlah peserta yang lebih jelas
+            $participantsText = $schedule->participants_count > 0
+                ? ' - ' . $schedule->participants_count . ' peserta'
+                : '';
+
             return [
                 'id' => $schedule->id,
-                'title' => $schedule->activity->name . ' (' . $schedule->location . ')',
+                'title' => $schedule->activity->name . ' (' . $schedule->location . ')' . $participantsText,
                 'start' => $start,
                 'className' => 'event-' . $color, // Asumsi class CSS bawaan template
                 // Data tambahan untuk modal detail nanti
@@ -43,6 +50,7 @@ class ScheduleController extends Controller
                     'coach' => $schedule->coach->name,
                     'status' => $schedule->status,
                     'description' => $schedule->activity->description,
+                    'participants_count' => $schedule->participants_count,
                     'schedule_data' => $schedule // PASS FULL OBJECT
                 ]
             ];

@@ -34,6 +34,18 @@
                     @error('name') <p class="text-xs text-red-500 font-medium mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <div class="space-y-2">
+                    <label for="role" class="text-sm font-bold text-gray-700">Tipe Member</label>
+                    <select name="role" id="role"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 transition-all @error('role') border-red-500 @enderror"
+                        required>
+                        <option value="">-- Pilih Tipe Member --</option>
+                        <option value="atlit" {{ old('role', $user->role) == 'atlit' ? 'selected' : '' }}>Atlit</option>
+                        <option value="pelatih" {{ old('role', $user->role) == 'pelatih' ? 'selected' : '' }}>Pelatih</option>
+                    </select>
+                    @error('role') <p class="text-xs text-red-500 font-medium mt-1">{{ $message }}</p> @enderror
+                </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="space-y-2">
                         <label for="username" class="text-sm font-bold text-gray-700">Username</label>
