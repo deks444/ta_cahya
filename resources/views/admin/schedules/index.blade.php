@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
 
+@section('page-title', 'Jadwal Latihan')
+
 @section('content')
     <div x-data>
         <div class="col-span-12 space-y-6 xl:col-span-12">
@@ -115,9 +117,9 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex justify-end gap-3">
                                             <button @click="$dispatch('open-modal', { 
-                                                        id: 'editScheduleModal', 
-                                                        schedule: {{ $schedule }}
-                                                    })"
+                                                                id: 'editScheduleModal', 
+                                                                schedule: {{ $schedule }}
+                                                            })"
                                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                                 Edit
                                             </button>
@@ -237,10 +239,10 @@
         <x-modal id="editScheduleModal" title="Edit Jadwal Latihan">
             <div x-data="{ schedule: { id: '', activity_id: '', date: '', start_time: '', location: '', quota: '', status: '' } }"
                 x-on:open-modal.window="if ($event.detail.id === 'editScheduleModal') { 
-                    schedule = $event.detail.schedule;
-                    // Format time string HH:MM:SS to HH:MM for input time
-                    if(schedule.start_time && schedule.start_time.length > 5) schedule.start_time = schedule.start_time.substring(0, 5); 
-                 }">
+                        schedule = $event.detail.schedule;
+                        // Format time string HH:MM:SS to HH:MM for input time
+                        if(schedule.start_time && schedule.start_time.length > 5) schedule.start_time = schedule.start_time.substring(0, 5); 
+                     }">
 
                 <form :action="`{{ url('admin/schedules') }}/${schedule.id}`" method="POST">
                     @csrf

@@ -32,7 +32,7 @@
     {{-- Modals Container (Moved Outside Main Grid) --}}
     <div x-data>
         {{-- Create Modal --}}
-        <x-modal id="createScheduleModal" title="Buat Jadwal Latihan">
+        <x-modal id="createScheduleModal" title="Buat Jadwal Latihan" maxWidth="2xl">
             <form action="{{ route('admin.schedules.store') }}" method="POST">
                 @csrf
                 <div class="space-y-5">
@@ -40,7 +40,7 @@
                         <label for="activity_id"
                             class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Jenis Kegiatan</label>
                         <select name="activity_id" id="activity_id" required
-                            class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
+                            class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                             <option value="">-- Pilih Kegiatan --</option>
                             @foreach($activities as $activity)
                                 <option value="{{ $activity->id }}">{{ $activity->name }}</option>
@@ -53,13 +53,13 @@
                             <label for="date"
                                 class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Tanggal</label>
                             <input type="date" name="date" id="date" value="{{ date('Y-m-d') }}" required
-                                class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                         </div>
                         <div>
                             <label for="start_time"
                                 class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Jam Mulai</label>
                             <input type="time" name="start_time" id="start_time" list="time-options" required
-                                class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                             <datalist id="time-options">
                                 <option value="06:00">
                                 <option value="07:00">
@@ -82,13 +82,13 @@
                                 class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Lokasi
                                 Latihan</label>
                             <input type="text" name="location" id="location" value="Lapangan Utama" required
-                                class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                         </div>
                         <div class="col-span-1">
                             <label for="quota"
                                 class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Kuota</label>
                             <input type="number" name="quota" id="quota" placeholder="∞"
-                                class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                         </div>
                     </div>
 
@@ -96,7 +96,7 @@
                         <label for="coach_id"
                             class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Pilih Pelatih</label>
                         <select name="coach_id" id="coach_id" required
-                            class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
+                            class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                             @foreach($coaches as $coach)
                                 <option value="{{ $coach->id }}">{{ $coach->name }}</option>
                             @endforeach
@@ -118,12 +118,12 @@
         </x-modal>
 
         {{-- Edit Modal --}}
-        <x-modal id="editScheduleModal" title="Edit Jadwal Latihan">
+        <x-modal id="editScheduleModal" title="Edit Jadwal Latihan" maxWidth="2xl">
             <div x-data="{ schedule: { id: '', activity_id: '', date: '', start_time: '', location: '', quota: '', status: '', coach_id: '' } }"
                 x-on:open-modal.window="if ($event.detail.id === 'editScheduleModal') {
-                                        schedule = $event.detail.schedule;
-                                        if(schedule.start_time && schedule.start_time.length > 5) schedule.start_time = schedule.start_time.substring(0, 5);
-                                     }">
+                                                            schedule = $event.detail.schedule;
+                                                            if(schedule.start_time && schedule.start_time.length > 5) schedule.start_time = schedule.start_time.substring(0, 5);
+                                                         }">
                 <form :action="`{{ url('admin/schedules') }}/${schedule.id}`" method="POST">
                     @csrf @method('PUT')
                     <div class="space-y-5">
@@ -131,7 +131,7 @@
                             <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Jenis
                                 Kegiatan</label>
                             <select name="activity_id" x-model="schedule.activity_id" required
-                                class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                                 @foreach($activities as $activity)
                                     <option value="{{ $activity->id }}">{{ $activity->name }}</option>
                                 @endforeach
@@ -142,13 +142,13 @@
                                 <label
                                     class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Tanggal</label>
                                 <input type="date" name="date" x-model="schedule.date" required
-                                    class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                                    class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Jam</label>
                                 <input type="time" name="start_time" x-model="schedule.start_time" list="time-options"
                                     required
-                                    class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                                    class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-4">
@@ -156,13 +156,13 @@
                                 <label
                                     class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Lokasi</label>
                                 <input type="text" name="location" x-model="schedule.location" required
-                                    class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                                    class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                             </div>
                             <div>
                                 <label
                                     class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Status</label>
                                 <select name="status" x-model="schedule.status" required
-                                    class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                                    class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                                     <option value="scheduled">Terjadwal</option>
                                     <option value="cancelled">Dibatalkan</option>
                                     <option value="completed">Selesai</option>
@@ -173,7 +173,7 @@
                         <div>
                             <label class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Pelatih</label>
                             <select name="coach_id" x-model="schedule.coach_id" required
-                                class="block w-full px-4 py-3 rounded-xl border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                                 @foreach($coaches as $coach)
                                     <option value="{{ $coach->id }}">{{ $coach->name }}</option>
                                 @endforeach
@@ -195,18 +195,20 @@
                             Kelola Presensi & Peserta
                         </a>
 
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-700">
-                            {{-- Delete --}}
-                            <button type="button"
-                                @click="if(confirm('Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.')) { document.getElementById('delete-form-' + schedule.id).submit(); }"
-                                class="flex items-center gap-2 text-red-500 hover:text-red-700 text-sm font-medium transition py-2 px-1">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
-                                    </path>
-                                </svg>
-                                Hapus
-                            </button>
+                        <div class="flex items-center {{ Auth::user()->role === 'admin' ? 'justify-between' : 'justify-end' }} pt-4 border-t border-gray-100 dark:border-gray-700">
+                            {{-- Delete (Admin Only) --}}
+                            @if(Auth::user()->role === 'admin')
+                                <button type="button"
+                                    @click="if(confirm('Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.')) { document.getElementById('delete-form-' + schedule.id).submit(); }"
+                                    class="flex items-center gap-2 text-red-500 hover:text-red-700 text-sm font-medium transition py-2 px-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                        </path>
+                                    </svg>
+                                    Hapus
+                                </button>
+                            @endif
 
                             <div class="flex gap-3">
                                 <button type="button" @click="$dispatch('close-modal')"
@@ -269,6 +271,12 @@
                 editable: false,
                 selectable: true,
                 dayMaxEvents: true,
+                eventTimeFormat: {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    meridiem: false,
+                    hour12: false
+                },
 
                 // Klik pada tanggal kosong -> Buka Modal Create
                 select: function (info) {
@@ -284,7 +292,7 @@
                         activity_id: '',
                         date: eventData.start.toISOString().split('T')[0],
                         start_time: eventData.start.toTimeString().split(' ')[0],
-                        location: eventData.title.split('(')[1] ? eventData.title.split('(')[1].replace(')', '') : 'Lapangan',
+                        location: eventData.extendedProps.schedule_data ? eventData.extendedProps.schedule_data.location : 'Lapangan',
                         status: eventData.extendedProps.status
                     };
 
@@ -304,7 +312,12 @@
                     let italicEl = document.createElement('div');
                     let time = arg.timeText || '';
                     let title = arg.event.title;
-                    italicEl.innerHTML = `<div class="p-1"><span class="block text-xs font-bold">${time}</span><span class="block text-xs truncate">${title}</span></div>`;
+                    let coach = arg.event.extendedProps.coach || '-';
+                    italicEl.innerHTML = `<div class="p-1 overflow-hidden leading-tight">
+                                        <span class="block text-xs font-bold truncate">${title}</span>
+                                        <span class="block text-[10px] truncate">(${coach})</span>
+                                        <span class="block text-[10px] font-medium opacity-90">${time}</span>
+                                    </div>`;
                     return { domNodes: [italicEl] };
                 }
             });

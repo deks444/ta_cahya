@@ -76,16 +76,49 @@
                                     </svg>
                                     Coach {{ $schedule->coach->name }}
                                 </div>
+                                
+                                {{-- Informasi Quota --}}
+                                @php
+                                    $participantsCount = $schedule->participants->count();
+                                    $isFull = $schedule->quota !== null && $participantsCount >= $schedule->quota;
+                                @endphp
+                                
+                                @if($schedule->quota !== null)
+                                    <div class="mt-3 flex items-center gap-2 text-sm">
+                                        <svg class="w-4 h-4 {{ $isFull ? 'text-red-500' : 'text-green-500' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                        </svg>
+                                        <span class="{{ $isFull ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-gray-600 dark:text-gray-400' }}">
+                                            {{ $participantsCount }} / {{ $schedule->quota }} peserta
+                                            @if($isFull)
+                                                <span class="text-xs">(Penuh)</span>
+                                            @endif
+                                        </span>
+                                    </div>
+                                @endif
                             </div>
                             <div
                                 class="mt-auto flex border-t border-gray-200 divide-x divide-gray-200 dark:border-gray-700 dark:divide-gray-700">
-                                <form action="{{ route('atlit.schedules.join', $schedule->id) }}" method="POST" class="w-full">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-b-xl font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800 text-blue-600 font-bold hover:text-blue-800">
-                                        Gabung Sekarang
-                                    </button>
-                                </form>
+                                @if($isFull)
+                                    {{-- Tombol Disabled jika Kelas Penuh --}}
+                                    <div class="w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-b-xl font-medium bg-gray-100 text-gray-400 cursor-not-allowed dark:bg-slate-800 dark:text-gray-500">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                        </svg>
+                                        Kelas Penuh
+                                    </div>
+                                @else
+                                    {{-- Tombol Gabung Sekarang --}}
+                                    <form action="{{ route('atlit.schedules.join', $schedule->id) }}" method="POST" class="w-full">
+                                        @csrf
+                                        <button type="submit"
+                                            class="w-full py-3 px-4 inline-flex justify-center items-center gap-2 rounded-b-xl font-medium bg-white text-gray-700 shadow-sm align-middle hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white focus:ring-blue-600 transition-all text-sm dark:bg-slate-900 dark:hover:bg-slate-800 dark:border-gray-700 dark:text-gray-400 dark:hover:text-white dark:focus:ring-offset-gray-800 text-blue-600 font-bold hover:text-blue-800">
+                                            Gabung Sekarang
+                                        </button>
+                                    </form>
+                                @endif
                             </div>
                         </div>
                     @endforeach
@@ -165,18 +198,6 @@
                                         Coach {{ $schedule->coach->name }}
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="mt-auto border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-slate-800 p-4">
-                                <form action="{{ route('atlit.schedules.leave', $schedule->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin ingin membatalkan pendaftaran?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                        class="text-sm font-medium text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 w-full text-center">
-                                        Batalkan Pendaftaran
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     @endforeach

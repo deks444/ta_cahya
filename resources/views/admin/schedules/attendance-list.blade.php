@@ -1,5 +1,7 @@
 @extends('admin.layouts.app')
 
+@section('page-title', 'Data Presensi')
+
 @section('content')
     <div class="space-y-6">
         <div class="flex items-center justify-between">
@@ -56,14 +58,30 @@
                                         </span>
                                     </td>
                                     <td class="px-4 py-3 text-right">
-                                        <a href="{{ route('admin.attendance.show', $schedule->id) }}"
-                                            class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition">
-                                            <span>Kelola</span>
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M9 5l7 7-7 7"></path>
-                                            </svg>
-                                        </a>
+                                        <div class="flex items-center justify-end gap-2">
+                                            @if(Auth::user()->role === 'admin')
+                                                <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST"
+                                                    class="inline-block"
+                                                    onsubmit="return confirm('Yakin ingin menghapus jadwal dan seluruh data presensi ini? Data yang dihapus tidak dapat dikembalikan.');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                        class="inline-flex items-center justify-center px-3 py-1.5 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg text-xs font-bold transition dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50"
+                                                        title="Hapus Data">
+                                                        Hapus
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            <a href="{{ route('admin.attendance.show', $schedule->id) }}"
+                                                class="inline-flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                                <span>Kelola</span>
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M9 5l7 7-7 7"></path>
+                                                </svg>
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty

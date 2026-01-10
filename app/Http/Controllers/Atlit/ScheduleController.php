@@ -23,7 +23,7 @@ class ScheduleController extends Controller
             ->toArray();
 
         // 2. Jadwal Tersedia (Future, belum diikuti, status scheduled)
-        $availableSchedules = ActivitySchedule::with(['activity', 'coach'])
+        $availableSchedules = ActivitySchedule::with(['activity', 'coach', 'participants'])
             ->where('date', '>=', $now->toDateString()) // Hari ini atau masa depan
             ->where('status', 'scheduled')
             ->whereNotIn('id', $joinedScheduleIds)
@@ -97,16 +97,5 @@ class ScheduleController extends Controller
         ]);
 
         return back()->with('success', 'Berhasil mendaftar kegiatan!');
-    }
-
-    public function leave(Request $request, $scheduleId)
-    {
-        $user = Auth::user();
-
-        ActivityParticipant::where('user_id', $user->id)
-            ->where('activity_schedule_id', $scheduleId)
-            ->delete();
-
-        return back()->with('success', 'Pendaftaran dibatalkan.');
     }
 }

@@ -50,10 +50,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Manajemen Kegiatan (Activities)
     Route::resource('activities', \App\Http\Controllers\Admin\ActivityController::class)->except(['create', 'show', 'edit']);
 
+    // Route spesifik untuk schedules harus sebelum resource route
+    Route::delete('schedules/{schedule}/participant/{participant}', [\App\Http\Controllers\Admin\ScheduleController::class, 'destroyParticipant'])->name('schedules.participant.destroy');
+    Route::post('schedules/{schedule}/quota', [\App\Http\Controllers\Admin\ScheduleController::class, 'updateQuota'])->name('schedules.updateQuota');
+    Route::post('schedules/{schedule}/attendance', [\App\Http\Controllers\Admin\ScheduleController::class, 'bulkAttendance'])->name('schedules.attendance.save');
+
     Route::resource('schedules', \App\Http\Controllers\Admin\ScheduleController::class)->except(['create', 'edit']);
     Route::get('attendance', [\App\Http\Controllers\Admin\ScheduleController::class, 'attendanceList'])->name('attendance.index');
     Route::get('attendance/{schedule}', [\App\Http\Controllers\Admin\ScheduleController::class, 'show'])->name('attendance.show');
-    Route::post('schedules/{schedule}/attendance', [\App\Http\Controllers\Admin\ScheduleController::class, 'bulkAttendance'])->name('schedules.attendance.save');
 
 
     Route::resource('achievements', \App\Http\Controllers\AchievementController::class);
@@ -78,6 +82,5 @@ Route::middleware(['auth'])->prefix('atlit')->name('atlit.')->group(function () 
     Route::controller(\App\Http\Controllers\Atlit\ScheduleController::class)->prefix('schedules')->name('schedules.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/{id}/join', 'join')->name('join');
-        Route::delete('/{id}/leave', 'leave')->name('leave');
     });
 });

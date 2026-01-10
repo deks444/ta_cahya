@@ -32,17 +32,12 @@ class ScheduleController extends Controller
             if ($schedule->status == 'completed')
                 $color = 'success';
 
-            // Gabungkan tanggal dan jam mulai
-            $start = Carbon::parse($schedule->date . ' ' . $schedule->start_time)->toIso8601String();
-
-            // Format title dengan jumlah peserta yang lebih jelas
-            $participantsText = $schedule->participants_count > 0
-                ? ' - ' . $schedule->participants_count . ' peserta'
-                : '';
+            // Gabungkan tanggal dan jam mulai (Floating time, ignore timezone)
+            $start = Carbon::parse($schedule->date . ' ' . $schedule->start_time)->format('Y-m-d\TH:i:s');
 
             return [
                 'id' => $schedule->id,
-                'title' => $schedule->activity->name . ' (' . $schedule->location . ')' . $participantsText,
+                'title' => $schedule->activity->name,
                 'start' => $start,
                 'className' => 'event-' . $color, // Asumsi class CSS bawaan template
                 // Data tambahan untuk modal detail nanti
@@ -215,5 +210,55 @@ class ScheduleController extends Controller
         $schedules = $query->orderBy('date', 'desc')->orderBy('start_time', 'desc')->paginate(10);
 
         return view('admin.schedules.attendance-list', compact('schedules'));
+    }
+
+    /**
+     * Hapus peserta dari jadwal tertentu
+     */
+    public function destroyParticipant($scheduleId, $participantId)
+    {
+        $schedule = ActivitySchedule::findOrFail($scheduleId);
+        $participant = ActivityParticipant::findOrFail($participantId);
+
+        // Validasi bahwa participant ini memang terdaftar di schedule ini
+        if ($participant->activity_schedule_id != $scheduleId) {
+            return back()->with('error', 'Data tidak valid.');
+        }
+
+        // Jika peserta sudah attended, hapus juga poinnya
+        if ($participant->status === 'attended') {
+            ActivityScore::where('user_id', $participant->user_id)
+                ->where('activity_id', $schedule->activity_id)
+                ->where('date', $schedule->date)
+                ->where('time', $schedule->start_time)
+                ->delete();
+        }
+
+        // Hapus peserta
+        $participant->delete();
+
+        return back()->with('success', 'Peserta berhasil dihapus dari jadwal.');
+    }
+
+    /**
+     * Update quota jadwal via AJAX
+     */
+    public function updateQuota(Request $request, $scheduleId)
+    {
+        $schedule = ActivitySchedule::findOrFail($scheduleId);
+
+        $request->validate([
+            'quota' => 'nullable|integer|min:0'
+        ]);
+
+        $schedule->update([
+            'quota' => $request->quota
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Quota berhasil diperbarui',
+            'quota' => $schedule->quota
+        ]);
     }
 }

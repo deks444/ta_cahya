@@ -8,21 +8,21 @@
 }">
     <div class="mb-6 rounded-2xl border border-gray-200 p-5 lg:p-6 dark:border-gray-800">
         <div class="flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
-            <div class="flex w-full flex-col items-center gap-6 xl:flex-row">
+            <div class="flex flex-col items-center gap-6 xl:flex-row xl:flex-shrink-0">
                 <div class="h-20 w-20 overflow-hidden rounded-full border border-gray-200 dark:border-gray-800">
                     @if (Auth::user()->avatar)
                         <img src="{{ asset(Auth::user()->avatar) }}" alt="user" class="h-full w-full object-cover" />
                     @else
                         <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=random"
-                            alt="user" />
+                            alt="user" class="h-full w-full object-cover" />
                     @endif
                 </div>
-                <div class="order-3 xl:order-2">
-                    <h4 class="mb-2 text-center text-lg font-semibold text-gray-800 xl:text-left dark:text-white/90">
+                <div>
+                    <h4 class="mb-1 text-center text-base font-semibold text-gray-800 xl:text-left dark:text-white/90">
                         {{ Auth::user()->name }}
                     </h4>
                     <div class="flex flex-col items-center gap-1 text-center xl:flex-row xl:gap-3 xl:text-left">
-                        <p class="text-sm text-gray-500 dark:text-gray-400">
+                        <p class="text-xs text-gray-500 dark:text-gray-400">
                             @if(Auth::user()->role === 'admin')
                                 Administrator
                             @elseif(Auth::user()->role === 'pelatih')
@@ -33,14 +33,11 @@
                         </p>
                     </div>
                 </div>
-                <div class="order-2 flex grow items-center gap-2 xl:order-3 xl:justify-end">
-
-                </div>
             </div>
 
             <div class="flex items-center gap-2 justify-center xl:justify-end w-full xl:w-auto">
                 <button @click="$dispatch('open-change-password-modal')"
-                    class="flex w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-4 py-3 text-sm font-medium text-white shadow-theme-xs hover:bg-gray-800 lg:inline-flex lg:w-auto dark:bg-white/10 dark:text-white dark:hover:bg-white/20">
+                    class="flex w-full items-center justify-center gap-2 rounded-full bg-gray-900 px-4 lg:px-12 py-3 lg:py-1.5 text-sm font-medium text-white shadow-theme-xs hover:bg-gray-800 lg:inline-flex lg:w-auto dark:bg-white/10 dark:text-white dark:hover:bg-white/20">
                     <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -51,7 +48,7 @@
                 </button>
 
                 <button @click="$dispatch('open-profile-info-modal')"
-                    class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 lg:inline-flex lg:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
+                    class="shadow-theme-xs flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white px-4 lg:px-12 py-3 lg:py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-800 lg:inline-flex lg:w-auto dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-white/[0.03] dark:hover:text-gray-200">
                     <svg class="fill-current" width="18" height="18" viewBox="0 0 18 18" fill="none"
                         xmlns="http://www.w3.org/2000/svg">
                         <path fill-rule="evenodd" clip-rule="evenodd"
@@ -65,10 +62,9 @@
     </div>
 
     <!-- Profile Info Modal -->
-    <x-ui.modal x-data="{ open: false }" @open-profile-info-modal.window="open = true" :isOpen="false"
-        class="max-w-[700px]">
+    <x-ui.modal x-data="{ open: false }" @open-profile-info-modal.window="open = true" :isOpen="false">
         <div
-            class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+            class="no-scrollbar relative w-full max-w-[700px] mx-auto overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div class="px-2 pr-14">
                 <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
                     Edit Personal Information
@@ -146,10 +142,9 @@
     </x-ui.modal>
 
     <!-- Change Password Modal -->
-    <x-ui.modal x-data="{ open: false }" @open-change-password-modal.window="open = true" :isOpen="false"
-        class="max-w-[700px]">
+    <x-ui.modal x-data="{ open: false }" @open-change-password-modal.window="open = true" :isOpen="false">
         <div
-            class="no-scrollbar relative w-full max-w-[700px] overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
+            class="no-scrollbar relative w-full max-w-[700px] mx-auto overflow-y-auto rounded-3xl bg-white p-4 dark:bg-gray-900 lg:p-11">
             <div class="px-2 pr-14">
                 <h4 class="mb-2 text-2xl font-semibold text-gray-800 dark:text-white/90">
                     Change Password

@@ -44,167 +44,39 @@ export function calendarInit() {
     const calendarEventsList = [
       {
         id: "1",
-        title: "Event Conf.",
+        title: "Latihan Fisik",
         start: `${newDate.getFullYear()}-${getDynamicMonth()}-01`,
-        extendedProps: { calendar: "Danger" },
+        extendedProps: { calendar: "Danger", coach: "Budi Santoso" },
       },
       {
         id: "2",
-        title: "Seminar #4",
+        title: "Teknik Dasar",
         start: `${newDate.getFullYear()}-${getDynamicMonth()}-07`,
         end: `${newDate.getFullYear()}-${getDynamicMonth()}-10`,
-        extendedProps: { calendar: "Success" },
+        extendedProps: { calendar: "Success", coach: "Siti Rahma" },
       },
       {
         id: "3",
-        title: "Meeting #5",
+        title: "Sparring",
         start: `${newDate.getFullYear()}-${getDynamicMonth()}-09T16:00:00`,
-        extendedProps: { calendar: "Primary" },
+        extendedProps: { calendar: "Primary", coach: "Agus Salim" },
       },
       {
         id: "4",
-        title: "Submission #1",
+        title: "Review Video",
         start: `${newDate.getFullYear()}-${getDynamicMonth()}-16T16:00:00`,
-        extendedProps: { calendar: "Warning" },
+        extendedProps: { calendar: "Warning", coach: "Dewi Putri" },
       },
       {
         id: "5",
-        title: "Seminar #6",
+        title: "Latihan Beban",
         start: `${newDate.getFullYear()}-${getDynamicMonth()}-11`,
         end: `${newDate.getFullYear()}-${getDynamicMonth()}-13`,
-        extendedProps: { calendar: "Danger" },
+        extendedProps: { calendar: "Danger", coach: "Rudi Hartono" },
       },
     ];
 
-    // Modal Functions
-    const openModal = () => {
-      const modal = document.getElementById("eventModal");
-      if (modal) {
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden"; // Prevent background scroll
-      }
-    };
-
-    const closeModal = () => {
-      const modal = document.getElementById("eventModal");
-      if (modal) {
-        modal.style.display = "none";
-        document.body.style.overflow = ""; // Restore scroll
-      }
-      resetModalFields();
-    };
-
-    // Reset modal fields
-    function resetModalFields() {
-      if (getModalTitleEl) getModalTitleEl.value = "";
-      if (getModalStartDateEl) getModalStartDateEl.value = "";
-      if (getModalEndDateEl) getModalEndDateEl.value = "";
-      
-      const getModalIfCheckedRadioBtnEl = document.querySelector(
-        'input[name="event-level"]:checked'
-      );
-      if (getModalIfCheckedRadioBtnEl) {
-        getModalIfCheckedRadioBtnEl.checked = false;
-      }
-    }
-
-    // Calendar Select function (when user clicks/drags on calendar)
-    const calendarSelect = (info) => {
-      resetModalFields();
-
-      // Update modal header
-      if (getModalHeaderEl) {
-        getModalHeaderEl.textContent = "Add Event";
-      }
-
-      // Show Add button, hide Update button
-      if (getModalAddBtnEl) getModalAddBtnEl.style.display = "flex";
-      if (getModalUpdateBtnEl) getModalUpdateBtnEl.style.display = "none";
-
-      // Set dates from selection
-      if (getModalStartDateEl) getModalStartDateEl.value = info.startStr;
-      if (getModalEndDateEl) {
-        getModalEndDateEl.value = info.endStr || info.startStr;
-      }
-
-      openModal();
-    };
-
-    // Calendar AddEvent button click
-    const calendarAddEvent = () => {
-      resetModalFields();
-
-      // Update modal header
-      if (getModalHeaderEl) {
-        getModalHeaderEl.textContent = "Add Event";
-      }
-
-      // Show Add button, hide Update button
-      if (getModalAddBtnEl) getModalAddBtnEl.style.display = "flex";
-      if (getModalUpdateBtnEl) getModalUpdateBtnEl.style.display = "none";
-
-      // Set default start date to today
-      const currentDate = new Date();
-      const yyyy = currentDate.getFullYear();
-      const mm = String(currentDate.getMonth() + 1).padStart(2, "0");
-      const dd = String(currentDate.getDate()).padStart(2, "0");
-      const combineDate = `${yyyy}-${mm}-${dd}`;
-
-      if (getModalStartDateEl) getModalStartDateEl.value = combineDate;
-
-      openModal();
-    };
-
-    // Calendar Event Click function (when user clicks existing event)
-    const calendarEventClick = (info) => {
-      const eventObj = info.event;
-
-      if (eventObj.url) {
-        window.open(eventObj.url);
-        info.jsEvent.preventDefault();
-      } else {
-        resetModalFields();
-
-        // Update modal header
-        if (getModalHeaderEl) {
-          getModalHeaderEl.textContent = "Edit Event";
-        }
-
-        // Get event details
-        const getModalEventId = eventObj.id;
-        const getModalEventLevel = eventObj.extendedProps.calendar;
-
-        // Set form values
-        if (getModalTitleEl) getModalTitleEl.value = eventObj.title;
-        if (getModalStartDateEl) {
-          getModalStartDateEl.value = eventObj.startStr.split("T")[0];
-        }
-        if (getModalEndDateEl) {
-          getModalEndDateEl.value = eventObj.endStr
-            ? eventObj.endStr.split("T")[0]
-            : "";
-        }
-
-        // Check the correct radio button
-        const getModalCheckedRadioBtnEl = document.querySelector(
-          `input[value="${getModalEventLevel}"]`
-        );
-        if (getModalCheckedRadioBtnEl) {
-          getModalCheckedRadioBtnEl.checked = true;
-        }
-
-        // Store event ID for update
-        if (getModalUpdateBtnEl) {
-          getModalUpdateBtnEl.dataset.fcEventPublicId = getModalEventId;
-        }
-
-        // Hide Add button, show Update button
-        if (getModalAddBtnEl) getModalAddBtnEl.style.display = "none";
-        if (getModalUpdateBtnEl) getModalUpdateBtnEl.style.display = "flex";
-
-        openModal();
-      }
-    };
+    // ... (kode lain tetap sama sampai eventContent)
 
     // Initialize Calendar
     const calendar = new Calendar(calendarEl, {
@@ -217,26 +89,23 @@ export function calendarInit() {
       select: calendarSelect,
       eventClick: calendarEventClick,
       displayEventTime: false, // Hide time display
+      dayMaxEvents: true, // Allow "more" link when too many events
       customButtons: {
         addEventButton: {
           text: "Add Event +",
           click: calendarAddEvent,
         },
       },
-      // eventClassNames({ event: calendarEvent }) {
-      //   const getColorValue =
-      //     calendarsEvents[calendarEvent._def.extendedProps.calendar];
-      //   return [`event-fc-color`, `fc-bg-${getColorValue}`];
-      // },
       // Optional: Custom event content without time
       eventContent(eventInfo) {
         const colorClass = `fc-bg-${eventInfo.event.extendedProps.calendar.toLowerCase()}`
+        const coachName = eventInfo.event.extendedProps.coach ? eventInfo.event.extendedProps.coach : '-';
         return {
           html: `
-            <div class="event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm">
-              <div class="fc-daygrid-event-dot"></div>
-              <div class="fc-event-time">${eventInfo.timeText}</div>
-              <div class="fc-event-title">${eventInfo.event.title}</div>
+            <div class="event-fc-color flex flex-col justify-start items-start fc-event-main ${colorClass} p-1.5 rounded-md w-full overflow-hidden leading-tight shadow-sm border-l-2 border-white/30">
+              <div class="fc-event-title text-xs font-bold w-full truncate mb-0.5" title="${eventInfo.event.title}">${eventInfo.event.title}</div>
+              <div class="text-[10px] w-full truncate mb-0.5" title="${coachName}">(${coachName})</div>
+              <div class="fc-event-time text-[10px] font-medium opacity-90 whitespace-nowrap">${eventInfo.timeText || 'Full Day'}</div>
             </div>
           `,
         }
@@ -265,7 +134,7 @@ export function calendarInit() {
     //       getEvent.setDates(setModalStartDateValue, setModalEndDateValue);
     //       getEvent.setExtendedProp("calendar", getModalUpdatedCheckedRadioBtnValue);
     //     }
-        
+
     //     closeModal();
     //   });
     // }
@@ -288,7 +157,7 @@ export function calendarInit() {
         if (getEvent) {
           // Remove the old event
           getEvent.remove();
-          
+
           // Add updated event with all properties
           calendar.addEvent({
             id: getPublicID,
@@ -299,7 +168,7 @@ export function calendarInit() {
             extendedProps: { calendar: getModalUpdatedCheckedRadioBtnValue },
           });
         }
-        
+
         closeModal();
       });
     }
@@ -326,7 +195,7 @@ export function calendarInit() {
           allDay: true,
           extendedProps: { calendar: getModalCheckedRadioBtnValue },
         });
-        
+
         closeModal();
       });
     }

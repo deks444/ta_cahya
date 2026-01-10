@@ -48,11 +48,17 @@ class UserController extends Controller
             'password' => ['required', 'string', 'min:8'],
             'role' => ['required', 'in:atlit,pelatih'],
             'is_active' => ['boolean'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_admin'] = false;
         $validated['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('avatar')) {
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = 'storage/' . $path;
+        }
 
         User::create($validated);
 
@@ -79,6 +85,7 @@ class UserController extends Controller
             'password' => ['nullable', 'string', 'min:8'],
             'role' => ['required', 'in:atlit,pelatih'],
             'is_active' => ['boolean'],
+            'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         if ($request->filled('password')) {
@@ -88,6 +95,16 @@ class UserController extends Controller
         }
 
         $validated['is_active'] = $request->has('is_active');
+
+        if ($request->hasFile('avatar')) {
+            // Delete old avatar if exists and not UI Avatar (default)
+            if ($user->avatar && file_exists(public_path($user->avatar)) && !str_contains($user->avatar, 'ui-avatars.com')) {
+                unlink(public_path($user->avatar));
+            }
+
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = 'storage/' . $path;
+        }
 
         $user->update($validated);
 
