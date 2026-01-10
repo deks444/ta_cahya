@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
     /**
@@ -11,8 +12,8 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('user_points', function (Blueprint $table) {
-            if (config('database.default') === 'pgsql') {
-                $table->uuid('uuid')->primary()->default(\Illuminate\Support\Facades\DB::raw('gen_random_uuid()'));
+            if (DB::getDriverName() === 'pgsql') {
+                $table->uuid('uuid')->primary()->default(DB::raw('gen_random_uuid()'));
             } else {
                 $table->uuid('uuid')->primary();
             }
