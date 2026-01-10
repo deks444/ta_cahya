@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\Route;
 // Public routes - accessible without login
 Route::middleware([AddSecurityHeaders::class])->group(function () {
     Route::get('/', [PageController::class, 'index'])->name('main');
-    Route::get('/peraturan', [PageController::class, 'rules'])->name('peraturan');
-    Route::get('/event/sertifikat', [PageController::class, 'sertifikat'])->name('event.sertifikat');
-    Route::get('/event/beritaacara', [PageController::class, 'acara'])->name('event.acara');
+
+    Route::get('/events', [PageController::class, 'events'])->name('events.index');
     Route::get('/aboutus', [PageController::class, 'about'])->name('about');
-    Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+
 });
 
 // Rute login hanya untuk tamu
@@ -30,15 +29,6 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard utama admin (simple)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Halaman-halaman template dashboard baru
-    Route::get('/ecommerce', function () {
-        return view('page.dashboard.ecommerce', ['title' => 'Statistik']);
-    })->name('ecommerce');
-
-    Route::get('/calendar', function () {
-        return view('page.calender', ['title' => 'Calendar']);
-    })->name('calendar');
 
     // Profile untuk admin & pelatih
     Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {

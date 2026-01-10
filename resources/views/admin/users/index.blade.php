@@ -91,7 +91,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button @click="editMode = true; currentUser = { id: '{{ $user->id }}', name: '{{ addslashes($user->name) }}', role: '{{ $user->role }}', username: '{{ $user->username }}', no_hp: '{{ $user->no_hp }}', is_active: {{ $user->is_active }} }; $dispatch('open-modal', { id: 'userModal' })"
+                                        <button @click="editMode = true; currentUser = { id: '{{ $user->id }}', name: '{{ addslashes($user->name) }}', role: '{{ $user->role }}', username: '{{ $user->username }}', no_hp: '{{ $user->no_hp }}', is_active: {{ $user->is_active ? 1 : 0 }} }; $dispatch('open-modal', { id: 'userModal' })"
                                             class="p-1.5 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition border border-amber-200 flex items-center justify-center leading-none"
                                             title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,7 +161,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <button @click="editMode = true; currentUser = { id: '{{ $user->id }}', name: '{{ addslashes($user->name) }}', role: '{{ $user->role }}', username: '{{ $user->username }}', no_hp: '{{ $user->no_hp }}', is_active: {{ $user->is_active }} }; $dispatch('open-modal', { id: 'userModal' })"
+                                        <button @click="editMode = true; currentUser = { id: '{{ $user->id }}', name: '{{ addslashes($user->name) }}', role: '{{ $user->role }}', username: '{{ $user->username }}', no_hp: '{{ $user->no_hp }}', is_active: {{ $user->is_active ? 1 : 0 }} }; $dispatch('open-modal', { id: 'userModal' })"
                                             class="p-1.5 bg-amber-50 text-amber-600 rounded-lg hover:bg-amber-100 transition border border-amber-200 flex items-center justify-center leading-none"
                                             title="Edit">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,7 +191,7 @@
 
         <!-- User Create/Edit Modal -->
         <x-modal id="userModal" title="Form Member">
-            <form :action="editMode ? `{{ url('admin/users') }}/${currentUser.id}` : `{{ route('admin.users.store') }}`" method="POST" enctype="multipart/form-data" class="space-y-5">
+            <form id="userForm" :action="editMode ? `{{ url('admin/users') }}/${currentUser.id}` : `{{ route('admin.users.store') }}`" method="POST" enctype="multipart/form-data" class="space-y-5">
                 @csrf
                 <template x-if="editMode">
                     <input type="hidden" name="_method" value="PUT">
@@ -258,32 +258,38 @@
 
                 <div class="space-y-2">
                     <label for="password" class="text-sm font-bold text-gray-700">Password <span class="text-red-500" x-show="!editMode">*</span></label>
-                    <input type="password" name="password" placeholder="Minimal 8 karakter"
+                    <input type="password" name="password" minlength="8" placeholder="Minimal 8 karakter"
                         class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-blue-500 transition-all"
                         :required="!editMode">
-                    <p x-show="editMode" class="text-xs text-gray-400 font-medium mt-1">Kosongkan jika tidak ingin mengganti password.</p>
+                    <p class="text-xs text-gray-400 font-medium mt-1">
+                        <span x-show="!editMode">Minimal 8 karakter.</span>
+                        <span x-show="editMode">Kosongkan jika tidak ingin mengganti password (min. 8 karakter jika diganti).</span>
+                    </p>
                 </div>
 
                 <div class="flex items-center gap-2 pt-2">
                     <input type="hidden" name="is_active" value="0">
-                    <input type="checkbox" name="is_active" value="1" x-model="currentUser.is_active"
+                    <input type="checkbox" name="is_active" value="1" 
+                        :checked="currentUser.is_active == 1" 
+                        @change="currentUser.is_active = $event.target.checked ? 1 : 0"
                         class="w-5 h-5 text-blue-600 bg-gray-50 border-gray-300 rounded focus:ring-blue-500">
                     <label class="text-sm font-semibold text-gray-700 select-none">Aktifkan akun member</label>
                 </div>
 
-                <div class="pt-6 flex gap-3 justify-end border-t border-gray-100">
-                    <button type="button" @click="$dispatch('close-modal')"
-                        class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition shadow-sm">
-                        Batal
-                    </button>
-                    <button type="submit"
-                        class="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-100 flex items-center gap-2">
-                        <svg x-show="!editMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                        <svg x-show="editMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                        <span x-text="editMode ? 'Simpan Perubahan' : 'Simpan Member'"></span>
-                    </button>
-                </div>
             </form>
+
+            <x-slot name="footer">
+                <button type="button" @click="$dispatch('close-modal')"
+                    class="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition shadow-sm">
+                    Batal
+                </button>
+                <button type="submit" form="userForm"
+                    class="px-5 py-2.5 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition shadow-lg shadow-blue-100 flex items-center gap-2">
+                    <svg x-show="!editMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                    <svg x-show="editMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    <span x-text="editMode ? 'Simpan Perubahan' : 'Simpan Member'"></span>
+                </button>
+            </x-slot>
         </x-modal>
     </div>
 @endsection

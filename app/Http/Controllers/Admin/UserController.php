@@ -53,7 +53,7 @@ class UserController extends Controller
 
         $validated['password'] = Hash::make($validated['password']);
         $validated['is_admin'] = false;
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->input('is_active');
 
         if ($request->hasFile('avatar')) {
             $path = $request->file('avatar')->store('avatars', 'public');
@@ -94,7 +94,7 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        $validated['is_active'] = $request->has('is_active');
+        $validated['is_active'] = $request->input('is_active');
 
         if ($request->hasFile('avatar')) {
             // Delete old avatar if exists and not UI Avatar (default)

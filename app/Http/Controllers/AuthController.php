@@ -24,6 +24,17 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
+            // Cek status aktif
+            if (!$user->is_active) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'username' => 'Akun Anda tidak aktif. Silakan hubungi admin.',
+                ])->onlyInput('username');
+            }
+
             // Redirect admin and pelatih to admin dashboard
             if ($user->role === 'admin' || $user->role === 'pelatih') {
                 return redirect()->route('admin.dashboard')->with('success', 'Selamat datang!');

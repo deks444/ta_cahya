@@ -16,6 +16,10 @@ class ActivitySchedule extends Model
         'status',
     ];
 
+    protected $casts = [
+        'date' => 'date',
+    ];
+
     // Jenis Kegiatan (Master Data)
     public function activity()
     {

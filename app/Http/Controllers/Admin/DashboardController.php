@@ -43,7 +43,7 @@ class DashboardController extends Controller
         }
 
         // CHART STATISTIK KEGIATAN - Optimasi dengan raw query
-        $filter = request('filter', 'monthly');
+        $filter = request('filter', 'daily');
         $chartLabels = [];
         $chartData = [];
 
@@ -87,30 +87,33 @@ class DashboardController extends Controller
             $startDate = Carbon::now()->subWeeks(7)->startOfWeek()->format('Y-m-d');
 
             if ($isAthlete) {
-                $schedules = DB::table('activity_schedules')
+                $results = DB::table('activity_schedules')
                     ->join('activity_participants', 'activity_schedules.id', '=', 'activity_participants.activity_schedule_id')
                     ->where('activity_participants.user_id', $user->id)
                     ->where('activity_schedules.date', '>=', $startDate)
-                    ->pluck('activity_schedules.date');
+                    ->select(DB::raw("EXTRACT(WEEK FROM activity_schedules.date) as week"), DB::raw('COUNT(*) as count'))
+                    ->groupBy('week')
+                    ->pluck('count', 'week');
             } elseif ($isCoach) {
-                $schedules = ActivitySchedule::where('coach_id', $user->id)
+                $results = ActivitySchedule::where('coach_id', $user->id)
                     ->where('date', '>=', $startDate)
-                    ->pluck('date');
+                    ->select(DB::raw("EXTRACT(WEEK FROM date) as week"), DB::raw('COUNT(*) as count'))
+                    ->groupBy('week')
+                    ->pluck('count', 'week');
             } else {
-                $schedules = ActivitySchedule::where('date', '>=', $startDate)
-                    ->pluck('date');
+                $results = ActivitySchedule::where('date', '>=', $startDate)
+                    ->select(DB::raw("EXTRACT(WEEK FROM date) as week"), DB::raw('COUNT(*) as count'))
+                    ->groupBy('week')
+                    ->pluck('count', 'week');
             }
 
             for ($i = 7; $i >= 0; $i--) {
                 $weekStart = Carbon::now()->subWeeks($i)->startOfWeek();
-                $weekEnd = Carbon::now()->subWeeks($i)->endOfWeek();
                 $chartLabels[] = $weekStart->format('d M');
 
-                $count = $schedules->filter(function ($date) use ($weekStart, $weekEnd) {
-                    $d = Carbon::parse($date);
-                    return $d->between($weekStart, $weekEnd);
-                })->count();
-                $chartData[] = $count;
+                $weekNum = $weekStart->format('W');
+                // Cast to int since array keys from pluck/DB can be strings or floats depending on DB driver
+                $chartData[] = $results[(int) $weekNum] ?? $results[$weekNum] ?? 0;
             }
 
         } else {

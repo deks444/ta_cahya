@@ -52,27 +52,11 @@
     </svg>
 
     <div class="relative z-10">
-        <div class="w-full max-w-5xl px-4 xl:px-0 py-10 lg:pt-16 mx-auto">
-            <div class="inline-flex items-center">
-                <!-- Logo -->
-                <a class="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80" href="#"
-                    aria-label="Brand">
-                    <img class="h-[75px]" src="{{ asset('img/MASTER LOGO ITB.png') }}" alt="">
-                </a>
-                <a class="flex-none font-semibold text-xl text-black focus:outline-none focus:opacity-80" href="#"
-                    aria-label="Brand">
-                    <img class="h-[100px]" src="{{ asset('img/LOGO DPM-PM.png') }}" alt="">
-                </a>
-                <!-- End Logo -->
-
-                <div class="border-s border-neutral-700 ps-5 ms-5">
-                    <p class="text-sm text-neutral-400">
-                        © 2024 DPM - PM.
-                    </p>
-                    <p class="text-sm text-neutral-200">
-                        ITB STIKOM Bali
-                    </p>
-                </div>
+        <div class="w-full max-w-5xl px-4 xl:px-0 py-6 mx-auto">
+            <div class="flex justify-center items-center w-full">
+                <p class="text-sm text-neutral-400">
+                    &copy; 2026 Sharefit.
+                </p>
             </div>
         </div>
     </div>
