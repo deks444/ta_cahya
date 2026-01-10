@@ -26,8 +26,13 @@ class ActivityController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:activities',
             'description' => 'nullable|string',
-            'icon' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('icon')) {
+            $path = $request->file('icon')->store('activities', 'public');
+            $validated['icon'] = 'storage/' . $path;
+        }
 
         Activity::create($validated);
 
@@ -44,8 +49,18 @@ class ActivityController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255|unique:activities,name,' . $id,
             'description' => 'nullable|string',
-            'icon' => 'nullable|string',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('icon')) {
+            // Delete old icon if exists
+            if ($activity->icon && file_exists(public_path($activity->icon))) {
+                unlink(public_path($activity->icon));
+            }
+
+            $path = $request->file('icon')->store('activities', 'public');
+            $validated['icon'] = 'storage/' . $path;
+        }
 
         $activity->update($validated);
 

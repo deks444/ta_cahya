@@ -4,35 +4,39 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Models\Activity;
+use App\Models\ActivitySchedule;
+
 class PageController extends Controller
 {
     public function index()
     {
-        return view('index');
+        $activities = Activity::all();
+        return view('index', compact('activities'));
     }
 
-    public function rules()
+    public function events()
     {
-        return view('rules');
-    }
+        $query = ActivitySchedule::where('date', '<', now());
 
-    public function sertifikat()
-    {
-        return view('sertifikat');
-    }
+        $totalEvents = $query->count();
+        $totalParticipants = \App\Models\ActivityParticipant::whereHas('schedule', function ($q) {
+            $q->where('date', '<', now());
+        })->where('status', 'attended')->count();
 
-    public function acara()
-    {
-        return view('event_acara');
+        $schedules = ActivitySchedule::with(['activity', 'coach'])
+            ->withCount('participants')
+            ->where('date', '<', now())
+            ->orderBy('date', 'desc')
+            ->paginate(9);
+
+        return view('events', compact('schedules', 'totalEvents', 'totalParticipants'));
     }
     public function about()
     {
         return view('about');
     }
-    public function faq()
-    {
-        return view('faq');
-    }
+
     public function login()
     {
         return view('login');

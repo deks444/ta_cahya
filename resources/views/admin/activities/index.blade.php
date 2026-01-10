@@ -41,6 +41,10 @@
                                     Deskripsi
                                 </th>
                                 <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
+                                    Ikon
+                                </th>
+                                <th scope="col"
                                     class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-300">
                                     Aksi
                                 </th>
@@ -55,13 +59,20 @@
                                     <td class="px-6 py-4 whitespace-normal text-sm text-gray-500 dark:text-gray-400 max-w-xs">
                                         {{ $activity->description ?? '-' }}
                                     </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                        @if($activity->icon)
+                                            <img src="{{ asset($activity->icon) }}" alt="Icon" class="h-8 w-8 object-contain">
+                                        @else
+                                            <span class="text-xs text-gray-400">Tidak ada</span>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div class="flex justify-end gap-3">
                                             {{-- Edit Button --}}
                                             <button @click="$dispatch('open-modal', { 
-                                                                                id: 'editActivityModal', 
-                                                                                activity: {{ $activity }}
-                                                                            })"
+                                                                                        id: 'editActivityModal', 
+                                                                                        activity: {{ $activity }}
+                                                                                    })"
                                                 class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300">
                                                 Edit
                                             </button>
@@ -97,7 +108,7 @@
 
         {{-- Create Modal --}}
         <x-modal id="createActivityModal" title="Tambah Kegiatan Baru" maxWidth="2xl">
-            <form action="{{ route('admin.activities.store') }}" method="POST">
+            <form action="{{ route('admin.activities.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-5">
                     <div>
@@ -112,6 +123,13 @@
                             (Opsional)</label>
                         <textarea name="description" id="description" rows="4" placeholder="Jelaskan detail kegiatan ini..."
                             class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all resize-none"></textarea>
+                    </div>
+                    <div>
+                        <label for="icon" class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Ikon
+                            (Opsional)</label>
+                        <input type="file" name="icon" id="icon" accept=".svg,.png,.jpg,.jpeg"
+                            class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <p class="text-xs text-gray-500 mt-1">Format: SVG, PNG, JPG (Max 2MB)</p>
                     </div>
                 </div>
 
@@ -130,10 +148,10 @@
 
         {{-- Edit Modal --}}
         <x-modal id="editActivityModal" title="Edit Kegiatan" maxWidth="2xl">
-            <div x-data="{ activity: { id: '', name: '', description: '' } }"
+            <div x-data="{ activity: { id: '', name: '', description: '', icon: '' } }"
                 x-on:open-modal.window="if ($event.detail.id === 'editActivityModal') activity = $event.detail.activity">
 
-                <form :action="`{{ url('admin/activities') }}/${activity.id}`" method="POST">
+                <form :action="`{{ url('admin/activities') }}/${activity.id}`" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="space-y-5">
@@ -149,6 +167,21 @@
                                 class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Deskripsi</label>
                             <textarea name="description" id="edit_description" x-model="activity.description" rows="4"
                                 class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label for="edit_icon"
+                                class="block text-sm font-semibold text-gray-800 dark:text-gray-200 mb-2">Ikon (Biarkan
+                                kosong jika tidak diubah)</label>
+
+                            <template x-if="activity.icon">
+                                <div class="mb-2">
+                                    <img :src="`{{ asset('') }}${activity.icon}`"
+                                        class="h-10 w-10 object-contain border rounded p-1">
+                                </div>
+                            </template>
+
+                            <input type="file" name="icon" id="edit_icon" accept=".svg,.png,.jpg,.jpeg"
+                                class="block w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 text-sm dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:bg-gray-800 transition-all file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                         </div>
                     </div>
 

@@ -33,7 +33,8 @@ class ScheduleController extends Controller
                 $color = 'success';
 
             // Gabungkan tanggal dan jam mulai (Floating time, ignore timezone)
-            $start = Carbon::parse($schedule->date . ' ' . $schedule->start_time)->format('Y-m-d\TH:i:s');
+            $dateString = $schedule->date instanceof \Carbon\Carbon ? $schedule->date->format('Y-m-d') : $schedule->date;
+            $start = Carbon::parse($dateString . ' ' . $schedule->start_time)->format('Y-m-d\TH:i:s');
 
             return [
                 'id' => $schedule->id,

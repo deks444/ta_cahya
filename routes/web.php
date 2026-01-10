@@ -10,11 +10,10 @@ use Illuminate\Support\Facades\Route;
 // Public routes - accessible without login
 Route::middleware([AddSecurityHeaders::class])->group(function () {
     Route::get('/', [PageController::class, 'index'])->name('main');
-    Route::get('/peraturan', [PageController::class, 'rules'])->name('peraturan');
-    Route::get('/event/sertifikat', [PageController::class, 'sertifikat'])->name('event.sertifikat');
-    Route::get('/event/beritaacara', [PageController::class, 'acara'])->name('event.acara');
+
+    Route::get('/events', [PageController::class, 'events'])->name('events.index');
     Route::get('/aboutus', [PageController::class, 'about'])->name('about');
-    Route::get('/faq', [PageController::class, 'faq'])->name('faq');
+
 });
 
 // Rute login hanya untuk tamu
