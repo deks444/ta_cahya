@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/png" href="{{ asset('img/sf_logo.png') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Profile') | Sharefit</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -19,7 +20,7 @@
 
     <!-- Main Content -->
     <main class="flex-grow py-10 px-4 sm:px-6 lg:px-8">
-        <div class="max-w-5xl mx-auto">
+        <div class="max-w-7xl mx-auto">
             @yield('content')
         </div>
     </main>

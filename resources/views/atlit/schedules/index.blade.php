@@ -1,7 +1,7 @@
 @extends('layout.main')
 
 @section('content')
-    <div class="max-w-[85rem] px-4 py-10 sm:px-6 lg:px-8 lg:py-14 mx-auto min-h-screen">
+    <div class="max-w-[85rem] px-4 pt-2 sm:pt-4 lg:pt-6 pb-10 sm:px-6 lg:px-8 lg:pb-14 mx-auto min-h-screen">
 
         {{-- Alerts --}}
         @if(session('success'))
@@ -17,14 +17,14 @@
         @endif
 
         {{-- Header --}}
-        <div class="mb-10 text-center">
+        <div class="mb-16 text-center">
             <h2 class="text-2xl font-bold md:text-3xl text-gray-800 dark:text-white">Jadwal Latihan</h2>
-            <p class="mt-2 text-gray-600 dark:text-gray-400">Pilih sesi latihan yang sesuai dengan waktu Anda.</p>
+            <p class="mt-3 text-gray-600 dark:text-gray-400">Pilih sesi latihan yang sesuai dengan waktu Anda.</p>
         </div>
 
         {{-- Bagian 1: Jadwal Tersedia --}}
-        <div class="mb-16">
-            <div class="flex items-center justify-between mb-6">
+        <div class="pb-32 mb-10">
+            <div class="flex items-center justify-between mb-10">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                     <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -40,7 +40,7 @@
                     Belum ada jadwal latihan baru yang tersedia saat ini.
                 </div>
             @else
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-12 mb-10">
                     @foreach($availableSchedules as $schedule)
                         <div
                             class="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7]">
@@ -79,7 +79,7 @@
                                 
                                 {{-- Informasi Quota --}}
                                 @php
-                                    $participantsCount = $schedule->participants->count();
+                                    $participantsCount = $schedule->participants_count;
                                     $isFull = $schedule->quota !== null && $participantsCount >= $schedule->quota;
                                 @endphp
                                 
@@ -127,8 +127,8 @@
         </div>
 
         {{-- Bagian 2: Jadwal Saya --}}
-        <div>
-            <div class="flex items-center justify-between mb-6">
+        <div class="py-16">
+            <div class="flex items-center justify-between mb-8">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                     <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -145,7 +145,7 @@
                     Anda belum terdaftar di jadwal latihan apapun.
                 </div>
             @else
-                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-12 mb-10">
                     @foreach($mySchedules as $participation)
                         @php $schedule = $participation->schedule; @endphp
                         <div
@@ -172,7 +172,7 @@
                                     </div>
                                 </div>
 
-                                <div class="space-y-2">
+                                <div class="space-y-4">
                                     <div class="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
                                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -206,8 +206,8 @@
         </div>
 
         {{-- Bagian 3: Riwayat Kelas --}}
-        <div>
-            <div class="flex items-center justify-between mb-6">
+        <div class="py-16">
+            <div class="flex items-center justify-between mb-8">
                 <h3 class="text-xl font-bold text-gray-800 dark:text-white flex items-center gap-2">
                     <svg class="w-6 h-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -272,4 +272,5 @@
                 </div>
             @endif
         </div>
+    </div>
 @endsection

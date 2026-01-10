@@ -30,15 +30,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Dashboard utama admin (simple)
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Halaman-halaman template dashboard baru
-    Route::get('/ecommerce', function () {
-        return view('page.dashboard.ecommerce', ['title' => 'Statistik']);
-    })->name('ecommerce');
-
-    Route::get('/calendar', function () {
-        return view('page.calender', ['title' => 'Calendar']);
-    })->name('calendar');
-
     // Profile untuk admin & pelatih
     Route::controller(\App\Http\Controllers\ProfileController::class)->group(function () {
         Route::get('/profile', 'index')->name('profile');

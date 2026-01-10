@@ -27,7 +27,7 @@
 
         @if($schedules->count() > 0)
             <!-- Grid -->
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-12">
                 @foreach($schedules as $schedule)
                     <div
                         class="group flex flex-col h-full bg-white border border-gray-200 shadow-sm rounded-xl p-5 dark:bg-slate-900 dark:border-gray-700 dark:shadow-slate-700/[.7] hover:shadow-md transition-all">
