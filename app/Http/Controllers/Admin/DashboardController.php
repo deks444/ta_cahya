@@ -4,59 +4,110 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\User;
 use App\Models\Achievement;
+use App\Models\ActivitySchedule;
 use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $user = auth()->user();
+        $isAdmin = $user->role === 'admin';
+        $isCoach = $user->role === 'pelatih';
+        $isAthlete = $user->role === 'atlit';
+
         // Ambil 5 atlit paling aktif berdasarkan total point (activity scores)
-        $athletes = User::where('role', 'atlit')
+        // Optimasi: hanya select field yang diperlukan
+        $athletes = User::select('id', 'name', 'username', 'avatar')
+            ->where('role', 'atlit')
             ->where('is_active', true)
             ->withSum('activityScores as total_point', 'score')
             ->orderByDesc('total_point')
-            ->take(5)
+            ->limit(5)
             ->get();
 
-        // Ambil 5 pelatih yang aktif
-        $coaches = User::where('role', 'pelatih')
-            ->where('is_active', true)
-            ->withCount('activitySchedules as total_schedules')
-            ->orderByDesc('total_schedules')
-            ->take(5)
-            ->get();
+        // Ambil 5 pelatih yang aktif (hanya untuk admin)
+        $coaches = null;
+        if ($isAdmin) {
+            $coaches = User::select('id', 'name', 'username', 'avatar')
+                ->where('role', 'pelatih')
+                ->where('is_active', true)
+                ->withCount('activitySchedules as total_schedules')
+                ->orderByDesc('total_schedules')
+                ->limit(5)
+                ->get();
+        }
 
-        // CHART STATISTIK KEGIATAN
+        // CHART STATISTIK KEGIATAN - Optimasi dengan raw query
         $filter = request('filter', 'monthly');
         $chartLabels = [];
         $chartData = [];
 
         if ($filter == 'daily') {
-            // 30 Hari Terakhir
-            $schedules = \App\Models\ActivitySchedule::whereDate('date', '>=', Carbon::now()->subDays(29))->get();
+            // 30 Hari Terakhir - Optimasi dengan groupBy di database
+            $startDate = Carbon::now()->subDays(29)->format('Y-m-d');
+
+            if ($isAthlete) {
+                // Untuk atlit: hanya kegiatan yang diikuti
+                $results = DB::table('activity_schedules')
+                    ->join('activity_participants', 'activity_schedules.id', '=', 'activity_participants.activity_schedule_id')
+                    ->where('activity_participants.user_id', $user->id)
+                    ->where('activity_schedules.date', '>=', $startDate)
+                    ->select('activity_schedules.date', DB::raw('COUNT(*) as count'))
+                    ->groupBy('activity_schedules.date')
+                    ->pluck('count', 'date');
+            } elseif ($isCoach) {
+                // Untuk pelatih: hanya kegiatan yang mereka buat
+                $results = ActivitySchedule::where('coach_id', $user->id)
+                    ->where('date', '>=', $startDate)
+                    ->select('date', DB::raw('COUNT(*) as count'))
+                    ->groupBy('date')
+                    ->pluck('count', 'date');
+            } else {
+                // Untuk admin: semua kegiatan
+                $results = ActivitySchedule::where('date', '>=', $startDate)
+                    ->select('date', DB::raw('COUNT(*) as count'))
+                    ->groupBy('date')
+                    ->pluck('count', 'date');
+            }
 
             for ($i = 29; $i >= 0; $i--) {
                 $date = Carbon::now()->subDays($i);
                 $dateString = $date->format('Y-m-d');
                 $chartLabels[] = $date->format('d M');
-                // Count exact date match
-                $chartData[] = $schedules->where('date', $dateString)->count();
+                $chartData[] = $results[$dateString] ?? 0;
             }
 
         } elseif ($filter == 'weekly') {
             // 8 Minggu Terakhir
-            $schedules = \App\Models\ActivitySchedule::whereDate('date', '>=', Carbon::now()->subWeeks(7)->startOfWeek())->get();
+            $startDate = Carbon::now()->subWeeks(7)->startOfWeek()->format('Y-m-d');
+
+            if ($isAthlete) {
+                $schedules = DB::table('activity_schedules')
+                    ->join('activity_participants', 'activity_schedules.id', '=', 'activity_participants.activity_schedule_id')
+                    ->where('activity_participants.user_id', $user->id)
+                    ->where('activity_schedules.date', '>=', $startDate)
+                    ->pluck('activity_schedules.date');
+            } elseif ($isCoach) {
+                $schedules = ActivitySchedule::where('coach_id', $user->id)
+                    ->where('date', '>=', $startDate)
+                    ->pluck('date');
+            } else {
+                $schedules = ActivitySchedule::where('date', '>=', $startDate)
+                    ->pluck('date');
+            }
 
             for ($i = 7; $i >= 0; $i--) {
                 $weekStart = Carbon::now()->subWeeks($i)->startOfWeek();
                 $weekEnd = Carbon::now()->subWeeks($i)->endOfWeek();
-                $chartLabels[] = $weekStart->format('d M'); // Label awal minggu
+                $chartLabels[] = $weekStart->format('d M');
 
-                $count = $schedules->filter(function ($item) use ($weekStart, $weekEnd) {
-                    $d = Carbon::parse($item->date);
+                $count = $schedules->filter(function ($date) use ($weekStart, $weekEnd) {
+                    $d = Carbon::parse($date);
                     return $d->between($weekStart, $weekEnd);
                 })->count();
                 $chartData[] = $count;
@@ -64,16 +115,33 @@ class DashboardController extends Controller
 
         } else {
             // Monthly (Default - Tahun Ini)
-            $schedules = \App\Models\ActivitySchedule::whereYear('date', date('Y'))->get();
+            $currentYear = date('Y');
+
+            if ($isAthlete) {
+                $results = DB::table('activity_schedules')
+                    ->join('activity_participants', 'activity_schedules.id', '=', 'activity_participants.activity_schedule_id')
+                    ->where('activity_participants.user_id', $user->id)
+                    ->whereYear('activity_schedules.date', $currentYear)
+                    ->select(DB::raw('EXTRACT(MONTH FROM activity_schedules.date) as month'), DB::raw('COUNT(*) as count'))
+                    ->groupBy('month')
+                    ->pluck('count', 'month');
+            } elseif ($isCoach) {
+                $results = ActivitySchedule::where('coach_id', $user->id)
+                    ->whereYear('date', $currentYear)
+                    ->select(DB::raw('EXTRACT(MONTH FROM date) as month'), DB::raw('COUNT(*) as count'))
+                    ->groupBy('month')
+                    ->pluck('count', 'month');
+            } else {
+                $results = ActivitySchedule::whereYear('date', $currentYear)
+                    ->select(DB::raw('EXTRACT(MONTH FROM date) as month'), DB::raw('COUNT(*) as count'))
+                    ->groupBy('month')
+                    ->pluck('count', 'month');
+            }
 
             foreach (range(1, 12) as $m) {
                 $monthCarbon = Carbon::createFromDate(null, $m, 1);
-                $chartLabels[] = $monthCarbon->format('M'); // Jan, Feb...
-
-                $count = $schedules->filter(function ($item) use ($m) {
-                    return Carbon::parse($item->date)->month == $m;
-                })->count();
-                $chartData[] = $count;
+                $chartLabels[] = $monthCarbon->format('M');
+                $chartData[] = $results[$m] ?? 0;
             }
         }
 
@@ -82,7 +150,11 @@ class DashboardController extends Controller
             'coaches' => $coaches,
             'chartLabels' => $chartLabels,
             'chartData' => $chartData,
-            'currentFilter' => $filter
+            'currentFilter' => $filter,
+            'isAdmin' => $isAdmin,
+            'isCoach' => $isCoach,
+            'isAthlete' => $isAthlete
         ]);
     }
 }
+

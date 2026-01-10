@@ -46,6 +46,7 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'no_hp' => ['required', 'string', 'max:20'],
             'password' => ['required', 'string', 'min:8'],
+            'role' => ['required', 'in:atlit,pelatih'],
             'is_active' => ['boolean'],
         ]);
 
@@ -76,6 +77,7 @@ class UserController extends Controller
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
             'no_hp' => ['required', 'string', 'max:20'],
             'password' => ['nullable', 'string', 'min:8'],
+            'role' => ['required', 'in:atlit,pelatih'],
             'is_active' => ['boolean'],
         ]);
 
