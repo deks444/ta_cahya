@@ -1,6 +1,6 @@
-@section('title', 'Login')
-@extends('layout.layout-main')
-@section('main')
+@section('page-title', 'Login')
+@extends('layout.layout')
+@section('content')
     <div class="container mx-auto px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center">
         <div class="w-full max-w-md mx-auto">
 
@@ -31,7 +31,9 @@
                                 <path d="M220.654 220.695H115.788V115.828h104.866v104.867z" fill="#fbbc09" />
                             </svg>
                         </button> --}}
+                    </div>
 
+                    <div>
                         {{-- <div
                             class="py-3 flex items-center text-xs text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6">
                             Or</div> --}}
