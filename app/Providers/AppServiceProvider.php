@@ -19,7 +19,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (app()->environment('production')) {
+        // Sanitize APP_URL and other env variables to remove potential double quotes from Railway
+        if (env('APP_URL')) {
+            config(['app.url' => str_replace('"', '', env('APP_URL'))]);
+        }
+
+        if (app()->environment('production') || config('app.env') === 'production') {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
     }
