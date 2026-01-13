@@ -48,7 +48,7 @@
                 <div class="text-justify ">
                     <ol class="text-lg font-medium text-gray-800 list-outside list-decimal flex flex-col space-y-3">
                         <li>Melakukan pendampingan seluruh kegiatan ORMAWA ITB STIKOM Bali, mulai dari persiapan kegiatan
-                            hingga hari H dan setelah kegiatan.</li>
+                            hingga hari H and setelah kegiatan.</li>
                         <li>Melakukan pendekatan baik secara personal maupun keorganisasian dengan harapan mau mendengarkan
                             aspirasi langsung dari Civitas Kampus ITB STIKOM Bali.</li>
                         <li>Membangun relasi yang baik dengan seluruh Civitas kampus ITB STIKOM Bali dan kampus luar ITB

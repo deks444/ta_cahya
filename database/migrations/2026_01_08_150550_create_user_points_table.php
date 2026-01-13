@@ -12,11 +12,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('user_points', function (Blueprint $table) {
-            if (DB::getDriverName() === 'pgsql') {
-                $table->uuid('uuid')->primary()->default(DB::raw('gen_random_uuid()'));
-            } else {
-                $table->uuid('uuid')->primary();
-            }
+            $table->uuid('uuid')->primary();
 
             // Matches users.id type (BigInt)
             $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
