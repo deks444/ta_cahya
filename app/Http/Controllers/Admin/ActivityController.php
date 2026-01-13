@@ -30,8 +30,10 @@ class ActivityController extends Controller
         ]);
 
         if ($request->hasFile('icon')) {
-            $path = $request->file('icon')->store('activities', 'public');
-            $validated['icon'] = 'storage/' . $path;
+            $file = $request->file('icon');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img/activities'), $fileName);
+            $validated['icon'] = 'img/activities/' . $fileName;
         }
 
         Activity::create($validated);
@@ -58,8 +60,10 @@ class ActivityController extends Controller
                 unlink(public_path($activity->icon));
             }
 
-            $path = $request->file('icon')->store('activities', 'public');
-            $validated['icon'] = 'storage/' . $path;
+            $file = $request->file('icon');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('img/activities'), $fileName);
+            $validated['icon'] = 'img/activities/' . $fileName;
         }
 
         $activity->update($validated);
